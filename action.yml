@@ -1,0 +1,27 @@
+name: "Argon Security Manifest"
+description: "Generates a manifest for the build artifact"
+author: "Argon"
+branding:
+  icon: "shield"
+  color: "purple"
+inputs:
+  argon-token:
+    description: "Token provided by Argon. This is sensitive, add this as a secret"
+    required: true
+  github-token:
+    description: "A valid Github access token. This is sensitive, add this as a secret"
+    required: true
+  artifact-path:
+    description: "The path of the artifact or the image and tag"
+    required: false
+  argon-url:
+    description: "The url of argon's server"
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        curl -L ${{ inputs.argon-url }}/v1/api/download/sh  -H "Authorization: Bearer ${{ inputs.argon-token }}" | sh -s ${{ inputs.argon-token }}
+        billy generate --artifact-path "${{ inputs.artifact-path }}" --access-token ${{ inputs.github-token }} --argon-token ${{ inputs.argon-token }}
+      shell: bash
