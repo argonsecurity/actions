@@ -24,7 +24,7 @@ The url of argon's server, provided by Argon, add this as a secret.
 
 ```
 - name: Argon Security Manifest
-  uses: argonsecurity/manifest-action@v1.0
+  uses: argonsecurity/actions/generate-manifest@v1.0
   with:
     github-token: "${{ secrets.GITHUB_TOKEN }}"
     argon-token: "${{ secrets.ARGON_TOKEN }}"
