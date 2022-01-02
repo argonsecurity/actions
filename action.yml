@@ -2,7 +2,7 @@ name: "Argon Security Manifest"
 description: "Generates a manifest for the build artifact"
 author: "Argon"
 branding:
-  icon: "shield"
+  icon: "package"
   color: "purple"
 inputs:
   argon-token:
