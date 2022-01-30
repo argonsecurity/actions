@@ -29,7 +29,7 @@ runs:
         curl -L ${{ inputs.argon-url }}/v1/api/download/sh  -H "Authorization: Bearer ${{ inputs.argon-token }}" | sh -s ${{ inputs.argon-token }}
         billy generate \
           --artifact-path "${{ inputs.artifact-path }}" \
-          --output "${{ inputs.artifact-path }}" \
+          --output "${{ inputs.output-path }}" \
           --access-token ${{ inputs.github-token }} \
           --argon-token ${{ inputs.argon-token }}
       shell: bash
