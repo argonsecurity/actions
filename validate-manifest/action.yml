@@ -65,5 +65,5 @@ runs:
           --minimum-reviewers="${{ inputs.minimum-reviewers }}" \
           --pull-request="${{ inputs.pull-request }}" \
           --sast="${{ inputs.sast }}" \
-          --secrets="${{ inputs.secrets }}" \
+          --secrets="${{ inputs.secrets }}"
       shell: bash
