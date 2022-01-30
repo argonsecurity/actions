@@ -15,8 +15,8 @@ inputs:
     description: "The path of the artifact or the image and tag"
     required: false
   argon-url:
-    description: "The url of argon's server"
-    default: ""
+    description: "The url of argon's server, provided by Argon, add this as a secret"
+    required: true
 
 runs:
   using: "composite"
