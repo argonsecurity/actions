@@ -64,6 +64,7 @@ Should check if there was a Secrets scanning during the artifact build. Defaults
   uses: argonsecurity/actions/validate-manifest@v1.0
   with:
     argon-token: "${{ secrets.ARGON_TOKEN }}"
+    argon-url: "${{ secrets.ARGON_URL }}"
     result-path: /path/to/argon-manifest.json
     rego-path: /path/to/custom/policy.rego
     secrets: true
