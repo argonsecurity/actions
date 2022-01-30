@@ -1,0 +1,70 @@
+name: "Argon Security Manifest Validation"
+description: "Generates a manifest for the build artifact"
+author: "Argon"
+branding:
+  icon: "shield"
+  color: "purple"
+inputs:
+  argon-token:
+    description: "Token provided by Argon. This is sensitive, add this as a secret"
+    required: true
+  argon-url:
+    description: "The url of argon's server, provided by Argon, add this as a secret"
+    required: true
+  result-path:
+    description: "The path to the manifest (billy generate result) path"
+    required: false
+    default: "/tmp/manifest.json"
+  rego-path:
+    description: "The path of the artifact or the image and tag"
+    required: false
+  branch-protection:
+    description: "Should check if there is a branch protection on the branch that triggered the artifact build. Defaults to `false`"
+    required: false
+    default: "false"
+  iac:
+    description: "Should check if there was an IaC scanning during the artifact build. Defaults to `false`"
+    required: false
+    default: ""
+  integrity:
+    description: "Should check if there was an integrity check during the artifact build. Defaults to `false`"
+    required: false
+    default: "false"
+  mfa:
+    description: "Should check if the user who triggered artifact build has MFA enabled. Defaults to `false`"
+    required: false
+    default: "false"
+  minimum-reviewers:
+    description: "Should check if the Pull Request that triggered the artifact build has at least 2 approvals. Defaults to `false`"
+    required: false
+    default: "false"
+  pull-request:
+    description: "Should check if the artifact build was triggered by a Pull Request. Defaults to `false`r"
+    required: false
+    default: "false"
+  sast:
+    description: "Should check if there was a SAST scanning during the artifact build. Defaults to `false`"
+    required: false
+    default: "false"
+  secrets:
+    description: "Should check if there was a Secrets scanning during the artifact build. Defaults to `false`"
+    required: false
+    default: "false"
+
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        curl -L ${{ inputs.argon-url }}/v1/api/download/sh  -H "Authorization: Bearer ${{ inputs.argon-token }}" | sh -s ${{ inputs.argon-token }}
+        billy validate \
+          --result-path "${{ inputs.result-path }}" \
+          --rego-path "${{ inputs.rego-path }}" \
+          --branch-protection="${{ inputs.branch-protection }}" \
+          --iac="${{ inputs.iac }}" \
+          --integrity="${{ inputs.integrity }}" \
+          --mfa="${{ inputs.mfa }}" \
+          --minimum-reviewers="${{ inputs.minimum-reviewers }}" \
+          --pull-request="${{ inputs.pull-request }}" \
+          --sast="${{ inputs.sast }}" \
+          --secrets="${{ inputs.secrets }}"
+      shell: bash

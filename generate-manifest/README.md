@@ -1,4 +1,4 @@
-# Argon Manifest Action
+# Argon Manifest Generate Action
 
 Generates an Argon manifest of an artifact
 
