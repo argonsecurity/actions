@@ -1,0 +1,42 @@
+name: "Argon Security Integrity Start"
+description: "Start the integrity check"
+author: "Argon"
+branding:
+  icon: "shield"
+  color: "purple"
+inputs:
+  argon-token:
+    description: "Token provided by Argon. This is sensitive, add this as a secret"
+    required: true
+  argon-url:
+    description: "The url of argon's server, provided by Argon, add this as a secret"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        sudo docker run -id \
+          --name tracee \
+          --pid=host \
+          --cgroupns=host \
+          --network=host \
+          --privileged \
+          -v /etc/os-release:/etc/os-release-host:ro \
+          -v /tmp/tracee/:/tmp/tracee -e LIBBPFGO_OSRELEASE_FILE=/etc/os-release-host \
+          -e TRACEE_EBPF_ONLY=1 \
+          aquasec/tracee:dev \
+          -t e=sched_process_exec,security_socket_connect,dns_response \
+          -t net=eth0 \
+          -o option:exec-hash \
+          -o json \
+          -o out-file:/tmp/tracee/tracee-output.json
+        until [ -f /tmp/tracee/out/tracee.pid ]
+        do
+            echo "Waiting for Tracee to get ready..."
+            sleep 2
+        done
+        echo "Tracee Running..."
+        argon integrity start --token ${{ inputs.argon-token }} &
+        exit
+      shell: bash

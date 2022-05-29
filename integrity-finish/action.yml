@@ -1,0 +1,57 @@
+name: "Argon Security Integrity Finish"
+description: "Finishing the integrity check"
+author: "Argon"
+branding:
+  icon: "shield"
+  color: "purple"
+inputs:
+  github-token:
+    description: "A valid Github access token. This is sensitive, add this as a secret"
+    required: true
+  argon-token:
+    description: "Token provided by Argon. This is sensitive, add this as a secret"
+    required: true
+  argon-url:
+    description: "The url of argon's server, provided by Argon, add this as a secret"
+    required: true
+  should-fail:
+    description: "Should fail the build if the integrity check fails"
+    required: false
+    default: "false"
+  create-pull-request:
+    description: "Should create a pull request for if there is a difference between the existing profile and the new profile. Defaults to `false`"
+    required: false
+    default: "false"
+  profile-output-file:
+    description: "The path to the output profile file"
+    required: false
+    default: "/tmp/integrity-profile.json"
+  existing-profile-path:
+    description: "The path to the existing profile file in the repository"
+    required: false
+    default: ".argon/integrity-profile.json"
+
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        argon integrity stop
+        docker stop tracee
+        if  [ -f /tmp/tracee/tracee-output.json ]
+        then
+          curl -L ${{ inputs.argon-url }}/v1/api/download/sh  -H "Authorization: Bearer ${{ inputs.argon-token }}" | sh -s ${{ inputs.argon-token }}
+          argon profile build \
+            --input /tmp/tracee/tracee-output.json \
+            --integrity-input /tmp/int-out
+            --output ${{ inputs.profile-output-file }}
+
+          argon profile diff \
+            --new-profile ${{ inputs.profile-output-file }} \
+            --old-profile ${{ inputs.existing-profile-path }} \
+            --access-token ${{ inputs.github-token }} \
+            --create-pr ${{ inputs.create-pull-request }}
+            --fail ${{ inputs.should-fail }}
+        else
+          echo "No tracee output found"
+        fi
+      shell: bash
