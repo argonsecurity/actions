@@ -22,12 +22,27 @@ The url of argon's server, provided by Argon, add this as a secret.
 
 ## Example usage
 
+### Argon Authentication
+
 ```
 - name: Argon Security Manifest
   uses: argonsecurity/actions/generate-manifest@v1.0
   with:
     github-token: "${{ secrets.GITHUB_TOKEN }}"
     argon-token: "${{ secrets.ARGON_TOKEN }}"
+    argon-url: "${{ secrets.ARGON_URL }}"
+    artifact-path: "image:tag"
+```
+
+### Aqua Authentication
+
+```
+- name: Argon Security Manifest
+  uses: argonsecurity/actions/generate-manifest@v1.0
+  with:
+    github-token: "${{ secrets.GITHUB_TOKEN }}"
+    aqua-key: "${{ secrets.AQUA_KEY }}"
+    aqua-secret: "${{ secrets.AQUA_SECRET }}"
     argon-url: "${{ secrets.ARGON_URL }}"
     artifact-path: "image:tag"
 ```

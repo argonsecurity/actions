@@ -8,6 +8,12 @@ inputs:
   argon-token:
     description: "Token provided by Argon. This is sensitive, add this as a secret"
     required: true
+  aqua-key:
+    description: "API Key provided by Aqua. This is sensitive, add this as a secret"
+    required: true
+  argon-token:
+    description: "Secret provided by Aqua. This is sensitive, add this as a secret"
+    required: true
   github-token:
     description: "A valid Github access token. This is sensitive, add this as a secret"
     required: true
@@ -26,10 +32,12 @@ runs:
   using: "composite"
   steps:
     - run: |
-        curl -L ${{ inputs.argon-url }}/v1/api/download/sh  -H "Authorization: Bearer ${{ inputs.argon-token }}" | sh -s ${{ inputs.argon-token }}
+        curl -L ${{ inputs.argon-url }}/v1/api/download/sh | sh
         billy generate \
           --artifact-path "${{ inputs.artifact-path }}" \
           --output "${{ inputs.output-path }}" \
-          --access-token ${{ inputs.github-token }} \
-          --argon-token ${{ inputs.argon-token }}
+          --access-token "${{ inputs.github-token }}" \
+          --argon-token "${{ inputs.argon-token }}"" \
+          --aqua-key "${{ inputs.aqua-key }}" \
+          --aqua-secret "${{ inputs.aqua-secret }}"
       shell: bash
